@@ -27,25 +27,30 @@
     </header>
 
 
-    <div  id="main" class="row">
-
+    <div id="main" class="row">
       <div class="twelve columns">
 
-        <h1>We are currently working on something awesome. Stay tuned!</h1>
+        <% if content_for(:heading) %>
+          <%= yield(:heading) %>
+        <% else %>
 
-        <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+          <h1>Land Ahoy!</h1>
+
+          <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+
+        <% end %>
 
         <!-- Begin MailChimp Signup Form -->
 
         <div id="mc_embed_signup">
-          <form action='/search/relocate/' method='post'>
+          <%= form_for(:_, url: '/search/relocate') do |f| %>
             <input type="text" value="" name="location" class="email" id="region_search" placeholder="location" required>
 
                  <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                  <div style="position: absolute; left: -5000px;"><input type="text" name="b_cdb7b577e41181934ed6a6a44_e65110b38d" value=""></div>
 
             <input type="submit" value="Search" name="subscribe" id="mc-embedded-subscribe" class="button">
-          </form>
+          <% end %>
         </div>
 
 
@@ -86,5 +91,13 @@
     <div id="go-top"><a class="smoothscroll" title="Back to Top" href="#intro"><i class="icon-up-open"></i></a></div>
 
    </footer> <!-- Footer End-->
+ <script>
+  $(function() {
+    $("#region_search").autocomplete({
+      source: "/search/locations",
+      minLength: 2
+    });
+  });
+</script>
 </body>
 </html>
