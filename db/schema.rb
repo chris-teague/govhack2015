@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703122033) do
+ActiveRecord::Schema.define(version: 20150703143449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,8 +30,11 @@ ActiveRecord::Schema.define(version: 20150703122033) do
     t.string   "name"
     t.geometry "area",     limit: {:srid=>4326, :type=>"multi_polygon"}
     t.string   "postcode"
+    t.integer  "state_id"
   end
 
-  add_index "postcodes", ["area"], name: "index_postcodes_on_area", using: :gist
+  create_table "states", force: :cascade do |t|
+    t.string "name"
+  end
 
 end
