@@ -7,7 +7,8 @@ RGeo::Shapefile::Reader.open(file, factory: factory) do |file|
   puts "File contains #{file.num_records} records."
   file.each do |record|
     p = Postcode.new
-    p.name = record.attributes["NAME_1"]
+    p.name = record.attributes["POA_NAME"]
+    p.postcode = record.attributes["POA_CODE"]
     p.area = record.geometry
     p.save!
   end
