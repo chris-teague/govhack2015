@@ -6,6 +6,47 @@
   <div id="map" style='width:100%;height:500px'></div>
 
   <br />
+
+  <div style="background-color:rgba(255,255,255,0.1);width:100%;padding:24px;">
+    <h3>Suburb Data</h3>
+
+    <div class="row">
+
+      <div class="four columns">
+        <p>Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius lacus,
+          nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus ligula ipsum,
+          faucibus at, tincidunt eget, porttitor non, dolor. </p>
+      </div>
+
+      <div class="four columns">
+        <p>Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius lacus,
+          nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus ligula ipsum,
+          faucibus at, tincidunt eget, porttitor non, dolor. </p>
+      </div>
+
+      <div class="four columns">
+        <p>Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius lacus,
+          nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus ligula ipsum,
+          faucibus at, tincidunt eget, porttitor non, dolor. </p>
+      </div>
+
+    </div>
+
+    <h3>Near By</h3>
+
+    <p>
+      <% @postcode.neigbouring.each do |postcode| %>
+        <%= link_to postcode.name, postcode_path(postcode) %>
+      <% end %>
+    </p>
+
+    <p>
+      <% @postcode.neigbouring_electorates.each do |electorate| %>
+        <%= link_to electorate.name, electorate_path(electorate) %>
+      <% end %>
+    </p>
+  </div>
+
   <p>Search for another location:</p>
 
 <% end %>
@@ -24,7 +65,9 @@ var bounds = [[<%= @postcode.bounding_box.min_y %>,
                <%= @postcode.bounding_box.max_x %>]];
 
 // create an orange rectangle
-L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map);
+// L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map);
+var json = <%= raw RGeo::GeoJSON.encode(@postcode.area).to_json %>;
+L.geoJson(json).addTo(map);
 
 // zoom the map to the rectangle bounds
 map.fitBounds(bounds);

@@ -5,6 +5,47 @@
   <div id="map" style='width:100%;height:500px;box-shadow:2px 2px 4px rgba(0,0,0,0.2)'></div>
 
   <br />
+
+  <div style="background-color:rgba(255,255,255,0.1);width:100%;padding:24px;">
+    <h3>Council Data</h3>
+
+    <div class="row">
+
+      <div class="four columns">
+        <p>Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius lacus,
+          nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus ligula ipsum,
+          faucibus at, tincidunt eget, porttitor non, dolor. </p>
+      </div>
+
+      <div class="four columns">
+        <p>Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius lacus,
+          nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus ligula ipsum,
+          faucibus at, tincidunt eget, porttitor non, dolor. </p>
+      </div>
+
+      <div class="four columns">
+        <p>Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius lacus,
+          nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus ligula ipsum,
+          faucibus at, tincidunt eget, porttitor non, dolor. </p>
+      </div>
+
+    </div>
+
+    <h3>Near By</h3>
+
+    <p>
+      <% @electorate.neigbouring.each do |electorate| %>
+        <%= link_to electorate.name, electorate_path(electorate) %>
+      <% end %>
+    </p>
+
+    <p>
+      <% @electorate.neigbouring_postcodes.each do |postcode| %>
+        <%= link_to postcode.name, postcode_path(postcode) %>
+      <% end %>
+    </p>
+  </div>
+
   <p>Search for another location:</p>
 
 <% end %>
@@ -32,12 +73,13 @@ var bounds = [[<%= @electorate.bounding_box.min_y %>,
               [<%= @electorate.bounding_box.max_y %>,
                <%= @electorate.bounding_box.max_x %>]];
 
+
+var json = <%= raw RGeo::GeoJSON.encode(@electorate.area).to_json %>;
+L.geoJson(json).addTo(map);
 // create an orange rectangle
 // L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map);
 
 // zoom the map to the rectangle bounds
 map.fitBounds(bounds);
-
-
 
 </script>
