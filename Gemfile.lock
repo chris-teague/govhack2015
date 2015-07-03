@@ -123,6 +123,8 @@ GEM
     rgeo-activerecord (4.0.0)
       activerecord (~> 4.2)
       rgeo (~> 0.3)
+    rgeo-geojson (0.3.1)
+      rgeo (~> 0.3)
     rgeo-shapefile (0.2.3)
       dbf (>= 1.7.0)
       rgeo (>= 0.3.3)
@@ -173,6 +175,7 @@ DEPENDENCIES
   pry
   rails (= 4.2.1)
   rgeo
+  rgeo-geojson
   rgeo-shapefile
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
