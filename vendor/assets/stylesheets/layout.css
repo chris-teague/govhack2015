@@ -164,13 +164,13 @@ ul#nav li.current a { color: #1E732D; }
 /* Main
 ------------------------------------------------------------------ */
 #main {
-	margin: 126px auto 0;
+	margin: 106px auto 0;
 	text-align: center;
 }
 #main h1 {
 	font: 42px/1.2em 'montserrat-bold', sans-serif;
 	color: #fff;
-	margin-bottom: 18px;
+	margin-bottom: 32px;
 	padding: 0 10%;
 	text-shadow: 0px 1px 3px rgba(0, 0, 0, .5);
 }

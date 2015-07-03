@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'application#index'
 
-  resources :postcodes, only: [:show]
+  resources :postcodes, only: [:show], path: 'suburbs'
   resources :electorates, only: [:show]
 
   resources :search do

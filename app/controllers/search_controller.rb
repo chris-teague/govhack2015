@@ -8,9 +8,9 @@ class SearchController < ApplicationController
 
   def relocate
     if postcode = Postcode.where(name: params[:location]).first
-      redirect_to postcode_url(postcode.id)
+      redirect_to postcode_path(postcode)
     elsif electorate = Electorate.where(name: params[:location]).first
-      redirect_to electorate_url(electorate.id)
+      redirect_to electorate_path(electorate)
     else
       flash[:notice] = "Can't find your location, yo"
       redirect_to '/'
