@@ -13,5 +13,9 @@
  *= require_tree .
  *= require_self
  *= require leaflet
+ *= require default
+ *= require fonts
+ *= require layout
+ *= require media-queries
  *= require jquery-ui
  */
