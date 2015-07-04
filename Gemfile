@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activerecord-postgis-adapter'
 gem 'rgeo'
-gem 'rgeo-shapefile'
+gem 'rgeo-shapefile', git: 'https://github.com/chris-teague/rgeo-shapefile.git', ref: 'master'
 gem 'rgeo-geojson'
 gem 'pry'
 gem 'stringex'
