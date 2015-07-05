@@ -19,9 +19,11 @@
     <% @categories_2 = {} %>
     <% census_2 = {} %>
 
+    <% comp_ids = [] %>
+
     <% @comparison.data ||= {}
        @comparison.contained_data_sets.each_with_index do |data_set, i| %>
-
+      <% comp_ids << data_set.id %>
       <% if @categories_2[data_set.id] = @comparison.data[data_set.id.to_s] %>
         <% @categories_2[data_set.id] = Hash.new { |k,v| k[v] = 0 } %>
 
@@ -91,6 +93,8 @@
       <% total_size = @electorate.meters_squared.to_f %>
       <% total_size2 = @comparison.meters_squared.to_f %>
 
+      <% next unless comp_ids.include? data_set.id %>
+
       <h1><%= data_set.name %></h1>
       <% if [1,2,4].include? data_set.id %>
         <% cats = categories.map { |n,v| [n,v] } %>
@@ -102,7 +106,12 @@
                 <p>
                 <small><%= g[0] %></small><br />
                 <b><%= number_to_percentage(g[1] / total_size * 100, precision: 2) %></b>
+
+                  <% begin %>
                   vs <%= number_to_percentage(@categories_2[data_set.id][g[0]].to_f / total_size2 * 100, precision: 2) %>
+                  <% rescue %>
+
+                  <% end %>
                 </p>
               <% end %>
             </div>
