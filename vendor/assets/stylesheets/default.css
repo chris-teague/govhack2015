@@ -205,7 +205,7 @@ p.lead {
 /* for 'em' and 'strong' tags, font-size and line-height should be same with
 the body tag due to rendering problems in some browsers */
 em { font: 15px/30px 'merriweather-italic', sans-serif; }
-strong, b { font: 15px/30px 'merriweather-bold', sans-serif; }
+strong, b { font: 28px/38px 'merriweather-bold', sans-serif; }
 small { font-size: 11px; line-height: inherit; }
 
 /*	Blockquotes */
@@ -313,7 +313,7 @@ hr { border: solid #E8E8E8; border-width: 1px 0 0; clear: both; margin: 11px 0 3
 a, a:visited {
    text-decoration: none;
    outline: 0;
-   color: #197C28;
+   color: #fff;
 
    -webkit-transition: color .3s ease-in-out;
    -moz-transition: color .3s ease-in-out;

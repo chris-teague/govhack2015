@@ -11,11 +11,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703160806) do
+ActiveRecord::Schema.define(version: 20150704151316) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+  create_table "data_entities", force: :cascade do |t|
+    t.integer  "data_set_id",                                               null: false
+    t.geometry "area",        limit: {:srid=>4326, :type=>"multi_polygon"}
+    t.jsonb    "data"
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+  end
+
+  add_index "data_entities", ["area"], name: "index_data_entities_on_area", using: :gist
+  add_index "data_entities", ["data_set_id"], name: "index_data_entities_on_data_set_id", using: :btree
+
+  create_table "data_sets", force: :cascade do |t|
+    t.string   "name"
+    t.geometry "bounds",         limit: {:srid=>4326, :type=>"multi_line_string"}
+    t.string   "concrete_class",                                                   default: "StraightOutput"
+    t.jsonb    "data"
+    t.datetime "created_at",                                                                                  null: false
+    t.datetime "updated_at",                                                                                  null: false
+    t.geometry "area",           limit: {:srid=>4326, :type=>"multi_polygon"}
+    t.string   "url"
+  end
+
+  add_index "data_sets", ["bounds"], name: "index_data_sets_on_bounds", using: :gist
 
   create_table "electorates", force: :cascade do |t|
     t.string   "name"
@@ -23,6 +47,7 @@ ActiveRecord::Schema.define(version: 20150703160806) do
     t.datetime "created_at",                                               null: false
     t.datetime "updated_at",                                               null: false
     t.string   "url"
+    t.json     "data"
   end
 
   add_index "electorates", ["area"], name: "index_electorates_on_area", using: :gist

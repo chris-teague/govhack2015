@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   root 'application#index'
 
   resources :postcodes, only: [:show], path: 'suburbs'
-  resources :electorates, only: [:show]
+  resources :electorates, only: [:show] do
+    resources :data_sets, only: [:show]
+  end
 
   resources :search do
     collection do
