@@ -7,6 +7,28 @@
 
   <br />
 
+  <div id="mc_embed_signup">
+    <%= form_for(:_, url: '/search/relocate') do |f| %>
+      <input type="text" value="" name="location" class="email" id="compare" placeholder="location to compare" required>
+
+      <input type='hidden' name='electorate_id' value='<%= @electorate.id %>' %>
+           <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+       <div style="position: absolute; left: -5000px;"><input type="text" name="b_cdb7b577e41181934ed6a6a44_e65110b38d" value=""></div>
+
+      <input type="submit" value="Compare" name="subscribe" id="mc-embedded-subscribe" class="button">
+    <% end %>
+  </div>
+
+  <script>
+    $(function() {
+      $("#compare").autocomplete({
+        source: "/search/locations",
+        minLength: 2
+      });
+    });
+  </script>
+
+
   <div style="background-color:rgba(255,255,255,0.1);width:100%;padding:24px;">
     <h3>Council Area Information</h3>
 
@@ -22,7 +44,8 @@
         <% elsif data_set.id == 2 %>
           <% area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
         <% elsif data_set.id == 3 %>
-          <%# area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
+            <% binding.pry %>
+          <% area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
         <% elsif data_set.id == 4 %>
           <% area.each { |a| categories[a["data"]["ZONE_DESCR"]] +=  a["st_area"] } %>
         <% end %>

@@ -7,13 +7,26 @@ class SearchController < ApplicationController
   end
 
   def relocate
-    if postcode = Postcode.where(name: params[:location]).first
-      redirect_to postcode_path(postcode)
-    elsif electorate = Electorate.where(name: params[:location]).first
-      redirect_to electorate_path(electorate)
+    if params[:electorate_id]
+      el = Electorate.find(params[:electorate_id])
+
+      if postcode = Postcode.where(name: params[:location]).first
+        redirect_to "/electorates/#{el.url}/vs/#{postcode.url}"
+      elsif electorate = Electorate.where(name: params[:location]).first
+        redirect_to "/electorates/#{el.url}/vs/#{electorate.url}"
+      else
+        flash[:notice] = "Can't find your location, yo"
+        redirect_to '/'
+      end
     else
-      flash[:notice] = "Can't find your location, yo"
-      redirect_to '/'
+      if postcode = Postcode.where(name: params[:location]).first
+        redirect_to postcode_path(postcode)
+      elsif electorate = Electorate.where(name: params[:location]).first
+        redirect_to electorate_path(electorate)
+      else
+        flash[:notice] = "Can't find your location, yo"
+        redirect_to '/'
+      end
     end
   end
 end
