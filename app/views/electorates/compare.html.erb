@@ -15,6 +15,7 @@
     <h3>Council Area Information</h3>
 
     <% @categories_2 = {} %>
+    <% census_2 = {} %>
 
     <% @comparison.data ||= {}
        @comparison.contained_data_sets.each_with_index do |data_set, i| %>
@@ -23,12 +24,24 @@
         <% @categories_2[data_set.id] = Hash.new { |k,v| k[v] = 0 } %>
 
         <% area = data_set.contained_data_entity_areas(@comparison) %>
+
         <% if data_set.id == 1 %>
           <% area.each { |a| @categories_2[data_set.id][a["data"]["DEV_CATEGO"]] +=  a["st_area"] } %>
         <% elsif data_set.id == 2 %>
           <% area.each { |a| @categories_2[data_set.id][a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
         <% elsif data_set.id == 3 %>
           <%# area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
+
+          <%
+            census_2[:median_age] = area.sum { |a| a.data["Median_age_persons"].to_f || 0.0 } / area.count.to_f
+            census_2[:median_rent_weekly] = area.sum { |a| a.data["Median_rent_weekly"].to_f || 0.0 } / area.count.to_f
+            census_2[:average_household_size] = area.sum { |a| a.data["Average_household_size"].to_f || 0.0 } / area.count.to_f
+            census_2[:median_total_family_income_weekly] = area.sum { |a| a.data["Median_Tot_fam_inc_weekly"].to_f || 0.0 } / area.count.to_f
+            census_2[:median_Tot_prsnl_inc_weekly] = area.sum { |a| a.data["Median_Tot_prsnl_inc_weekly"].to_f || 0.0 } / area.count.to_f
+            census_2[:average_num_psns_per_bedroom] = area.sum { |a| a.data["Average_num_psns_per_bedroom"].to_f || 0.0 } / area.count.to_f
+            census_2[:median_mortgage_repay_monthly] = area.sum { |a| a.data["Median_mortgage_repay_monthly"].to_f || 0.0 } / area.count.to_f
+          %>
+
         <% elsif data_set.id == 4 %>
           <% area.each { |a| @categories_2[data_set.id][a["data"]["ZONE_DESCR"]] +=  a["st_area"] } %>
         <% end %>
@@ -38,11 +51,11 @@
       <% end %>
     <% end %>
 
+    <% census = {} %>
     <% @electorate.data ||= {} %>
-
     <% @electorate.contained_data_sets.each_with_index do |data_set, i| %>
 
-      <% unless categories = @electorate.data[data_set.id.to_s] %>
+      <% if categories = @electorate.data[data_set.id.to_s] %>
         <% categories = Hash.new { |k,v| k[v] = 0 } %>
         <% area = data_set.contained_data_entity_areas(@electorate) %>
         <% if data_set.id == 1 %>
@@ -51,6 +64,16 @@
           <% area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
         <% elsif data_set.id == 3 %>
 
+
+          <%
+            census[:median_age] = area.sum { |a| a.data["Median_age_persons"].to_f || 0.0 } / area.count.to_f
+            census[:median_rent_weekly] = area.sum { |a| a.data["Median_rent_weekly"].to_f || 0.0 } / area.count.to_f
+            census[:average_household_size] = area.sum { |a| a.data["Average_household_size"].to_f || 0.0 } / area.count.to_f
+            census[:median_total_family_income_weekly] = area.sum { |a| a.data["Median_Tot_fam_inc_weekly"].to_f || 0.0 } / area.count.to_f
+            census[:median_Tot_prsnl_inc_weekly] = area.sum { |a| a.data["Median_Tot_prsnl_inc_weekly"].to_f || 0.0 } / area.count.to_f
+            census[:average_num_psns_per_bedroom] = area.sum { |a| a.data["Average_num_psns_per_bedroom"].to_f || 0.0 } / area.count.to_f
+            census[:median_mortgage_repay_monthly] = area.sum { |a| a.data["Median_mortgage_repay_monthly"].to_f || 0.0 } / area.count.to_f
+          %>
           <% area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
 
         <% elsif data_set.id == 4 %>
@@ -83,8 +106,22 @@
             </div>
           <% end %>
         </div>
+      <% else %>
+        <% cats = census.map { |n,v| [n,v] } %>
+         <div class="row">
+         <% cats.sort_by { |c| -c[1] }.in_groups_of((cats.count / 3.0).ceil, false) do |group| %>
+            <div class="four columns">
+              <% group.each do |g| %>
+                <p>
+                <small><%= g[0] %></small><br />
+                <b><%= number_with_precision(g[1], precision: 2) %></b>
+                  vs <%= number_with_precision(census_2[g[0]].to_f, precision: 2) %>
+                </p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
       <% end %>
-
     <% end %>
 
     <h3>Near By</h3>

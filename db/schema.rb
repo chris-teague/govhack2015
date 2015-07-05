@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150704151316) do
+ActiveRecord::Schema.define(version: 20150705035419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20150704151316) do
   end
 
   add_index "data_entities", ["area"], name: "index_data_entities_on_area", using: :gist
+  add_index "data_entities", ["data"], name: "data_index", using: :gin
   add_index "data_entities", ["data_set_id"], name: "index_data_entities_on_data_set_id", using: :btree
 
   create_table "data_sets", force: :cascade do |t|

@@ -44,7 +44,6 @@
         <% elsif data_set.id == 2 %>
           <% area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
         <% elsif data_set.id == 3 %>
-            <% binding.pry %>
           <% area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
         <% elsif data_set.id == 4 %>
           <% area.each { |a| categories[a["data"]["ZONE_DESCR"]] +=  a["st_area"] } %>
