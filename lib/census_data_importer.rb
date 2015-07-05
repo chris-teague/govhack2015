@@ -16,8 +16,11 @@ csv.each_with_index do |row, index|
       row[1..-1].each_with_index do |row_data, i|
         data[names[i]] = row_data
       end
+
+      d.update_column(:data, d.data.merge(data))
+
+      puts 'saved'
     end
-    d.data.merge(data)
-    d.save!
+
   end
 end
