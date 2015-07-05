@@ -1,6 +1,8 @@
 
 
 <% content_for(:heading) do %>
+
+<%= cache([@electorate, @comparison]) do %>
   <h1><a href='/electorates/<%= @electorate.url %>'><%= @electorate.name %></a></h1>
 
   <div id="map" style='width:100%;height:450px;box-shadow:2px 2px 4px rgba(0,0,0,0.2)'></div>
@@ -141,7 +143,7 @@
 
 <br />
   <p>Search for another location:</p>
-
+<% end %>
 <% end %>
 
 <script type='text/javascript'>
@@ -223,3 +225,4 @@ map2.fitBounds(bounds2);
 
 
 </script>
+
