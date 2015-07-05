@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     resources :data_sets, only: [:show]
   end
 
+  get "/electorates/:id/vs/:comparison_id", to: 'electorates#compare'
+
   resources :search do
     collection do
       get :locations

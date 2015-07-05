@@ -1,0 +1,185 @@
+
+
+<% content_for(:heading) do %>
+  <h1><%= @electorate.name %></h1>
+
+  <div id="map" style='width:100%;height:450px;box-shadow:2px 2px 4px rgba(0,0,0,0.2)'></div>
+<br />
+  <h1>vs <%= @comparison.name %></h1>
+
+  <div id="map2" style='width:100%;height:450px;box-shadow:2px 2px 4px rgba(0,0,0,0.2)'></div>
+
+  <br />
+
+  <div style="background-color:rgba(255,255,255,0.1);width:100%;padding:24px;">
+    <h3>Council Area Information</h3>
+
+    <% @categories_2 = {} %>
+
+    <% @comparison.data ||= {}
+       @comparison.contained_data_sets.each_with_index do |data_set, i| %>
+
+      <% if @categories_2[data_set.id] = @comparison.data[data_set.id.to_s] %>
+        <% @categories_2[data_set.id] = Hash.new { |k,v| k[v] = 0 } %>
+
+        <% area = data_set.contained_data_entity_areas(@comparison) %>
+        <% if data_set.id == 1 %>
+          <% area.each { |a| @categories_2[data_set.id][a["data"]["DEV_CATEGO"]] +=  a["st_area"] } %>
+        <% elsif data_set.id == 2 %>
+          <% area.each { |a| @categories_2[data_set.id][a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
+        <% elsif data_set.id == 3 %>
+          <%# area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
+        <% elsif data_set.id == 4 %>
+          <% area.each { |a| @categories_2[data_set.id][a["data"]["ZONE_DESCR"]] +=  a["st_area"] } %>
+        <% end %>
+
+        <% @comparison.data[data_set.id] = @categories_2[data_set.id] %>
+        <% @comparison.save %>
+      <% end %>
+    <% end %>
+
+    <% @electorate.data ||= {} %>
+
+    <% @electorate.contained_data_sets.each_with_index do |data_set, i| %>
+
+      <% unless categories = @electorate.data[data_set.id.to_s] %>
+        <% categories = Hash.new { |k,v| k[v] = 0 } %>
+        <% area = data_set.contained_data_entity_areas(@electorate) %>
+        <% if data_set.id == 1 %>
+          <% area.each { |a| categories[a["data"]["DEV_CATEGO"]] +=  a["st_area"] } %>
+        <% elsif data_set.id == 2 %>
+          <% area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
+        <% elsif data_set.id == 3 %>
+          <%# area.each { |a| categories[a["data"]["DESCRIPTIO"]] +=  a["st_area"] } %>
+        <% elsif data_set.id == 4 %>
+          <% area.each { |a| categories[a["data"]["ZONE_DESCR"]] +=  a["st_area"] } %>
+        <% end %>
+
+        <% @electorate.data[data_set.id] = categories %>
+        <% @electorate.save %>
+      <% end %>
+
+      <% @comparison.data ||= {} %>
+
+      <% total_size = @electorate.meters_squared.to_f %>
+      <% total_size2 = @comparison.meters_squared.to_f %>
+
+      <h1><%= data_set.name %></h1>
+      <% if [1,2,4].include? data_set.id %>
+        <% cats = categories.map { |n,v| [n,v] } %>
+
+        <div class="row">
+          <% cats.sort_by { |c| -c[1] }.in_groups_of((cats.count / 3.0).ceil, false) do |group| %>
+            <div class="four columns">
+              <% group.each do |g| %>
+                <p>
+                <small><%= g[0] %></small><br />
+                <b><%= number_to_percentage(g[1] / total_size * 100, precision: 2) %></b>
+                  vs <%= number_to_percentage(@categories_2[data_set.id][g[0]].to_f / total_size * 100, precision: 2) %>
+                </p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+    <% end %>
+
+    <h3>Near By</h3>
+
+    <p>
+      <% @electorate.neigbouring.each do |electorate| %>
+        <%= link_to electorate.name, electorate_path(electorate) %>
+      <% end %>
+    </p>
+
+    <p>
+      <% @electorate.neigbouring_postcodes.each do |postcode| %>
+        <%= link_to postcode.name, postcode_path(postcode) %>
+      <% end %>
+    </p>
+  </div>
+
+  <p>Search for another location:</p>
+
+<% end %>
+
+<script type='text/javascript'>
+
+  var map = L.map('map');
+
+  var osmUrl='https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
+      // var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+  var osmAttrib = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+          '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+          'Imagery © <a href="http://mapbox.com">Mapbox</a>';
+
+  L.tileLayer(osmUrl, {
+    maxZoom: 19,
+    minZoom: 3,
+    attribution: osmAttrib,
+    id: 'examples.map-i875mjb7'
+  }).addTo(map);
+
+  var bounds = [[<%= @electorate.bounding_box.min_y %>,
+               <%= @electorate.bounding_box.min_x %>],
+              [<%= @electorate.bounding_box.max_y %>,
+               <%= @electorate.bounding_box.max_x %>]];
+
+
+  var json = <%= raw RGeo::GeoJSON.encode(@electorate.area).to_json %>;
+  L.geoJson(json).addTo(map);
+
+
+  var other_json = [<%= raw @electorate.contained_data_sets.first.contained_data_entity_areas(@electorate).map { |s| s["st_asgeojson"] }.join(',') %>];
+
+  var myStyle = {
+    "color": "#ff7800",
+    "weight": 1,
+    "opacity": 0.65
+};
+
+  L.geoJson(other_json, {
+    style: myStyle
+}).addTo(map);
+
+map.fitBounds(bounds);
+
+
+
+  var map2 = L.map('map2');
+
+  L.tileLayer(osmUrl, {
+    maxZoom: 19,
+    minZoom: 3,
+    attribution: osmAttrib,
+    id: 'examples.map-i875mjb7'
+  }).addTo(map2);
+
+  var bounds2 = [[<%= @comparison.bounding_box.min_y %>,
+               <%= @comparison.bounding_box.min_x %>],
+              [<%= @comparison.bounding_box.max_y %>,
+               <%= @comparison.bounding_box.max_x %>]];
+
+
+  var json = <%= raw RGeo::GeoJSON.encode(@comparison.area).to_json %>;
+  L.geoJson(json).addTo(map2);
+
+
+  var other_json = [<%= raw @comparison.contained_data_sets.first.contained_data_entity_areas(@comparison).map { |s| s["st_asgeojson"] }.join(',') %>];
+
+  var myStyle = {
+    "color": "#ff7800",
+    "weight": 1,
+    "opacity": 0.65
+};
+
+  L.geoJson(other_json, {
+    style: myStyle
+}).addTo(map2);
+
+map2.fitBounds(bounds2);
+
+
+</script>
