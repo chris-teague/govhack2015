@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Landahoy</title>
+  <title>Compare all the things!</title>
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
@@ -12,7 +12,7 @@
 
     <header class="row">
 
-       <nav id="nav-wrap">
+     <!--   <nav id="nav-wrap">
 
           <a class="menu-btn" href="#nav-wrap" title="Show navigation">Show navigation</a>
          <a class="menu-btn" href="#" title="Hide navigation">Hide navigation</a>
@@ -22,7 +22,7 @@
              <li><a class="smoothscroll" href="#styles">Style Guide</a></li>
           </ul> <!-- end #nav -->
 
-       </nav> <!-- end #nav-wrap -->
+       </nav> <!-- end #nav-wrap --> -->
 
     </header>
 
@@ -34,9 +34,12 @@
           <%= yield(:heading) %>
         <% else %>
 
-          <h1>Land Ahoy!</h1>
+          <h1>Compare all the things!</h1>
 
-          <p>Search & compare metrics of different council regions & suburbs around Australia.</p>
+          <p>
+            Search & compare metrics of different local councils & suburbs around   Australia. Data such as land zones, land usage & 2011 census data can
+            be compared across these regions.
+          </p>
 
         <% end %>
 
